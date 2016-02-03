@@ -7,7 +7,7 @@ class Application:
         self.wd = WebDriver()
         self.wd.implicitly_wait(60)
         self.session = SessionHelper(self)
-        self.group - GroupHelper(self)
+        self.group = GroupHelper(self)
 
     def Open_homepage(self):
         wd = self.wd
