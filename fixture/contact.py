@@ -96,3 +96,50 @@ class ContactHelper:
     def return_to_home_page(self):
         wd = self.app.wd
         wd.find_element_by_link_text("home page").click()
+
+    def modify_first_group(self, new_group_data):
+        wd = self.app.wd
+        self.select_first_item()
+        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
+        #fill contact form
+        self.fill_group_form(new_group_data)
+        #submit modification
+        wd.find_element_by_name("update").click()
+        wd.find_element_by_link_text("home").click()
+
+
+    def fill_group_form(self, contact):
+        wd = self.app.wd
+        self.change_field_value("firstname", contact.firstname)
+        self.change_field_value("middlename", contact.middlename)
+        self.change_field_value("lastname", contact.lastname)
+        self.change_field_value("nickname", contact.nickname)
+        self.change_field_value("title", contact.title)
+        self.change_field_value("company", contact.company)
+        self.change_field_value("address", contact.address)
+        self.change_field_value("homenumber", contact.homenumber)
+        self.change_field_value("mobilenumber", contact.mobilenumber)
+        self.change_field_value("faxnumber", contact.faxnumber)
+        self.change_field_value("worknumber", contact.worknumber)
+        self.change_field_value("email", contact.email)
+        self.change_field_value("email2", contact.email2)
+        self.change_field_value("email3", contact.email3)
+        self.change_field_value("homepage", contact.homepage)
+        self.change_field_value("byear", contact.byear)
+        self.change_field_value("address2", contact.address2)
+        self.change_field_value("ayear", contact.ayear)
+        self.change_field_value("phone2", contact.phone2)
+        self.change_field_value("notes", contact.notes)
+
+
+    def change_field_value(self, field_name, text):
+        wd = self.app.wd
+        if text is not None:
+            wd.find_element_by_name(field_name).click()
+            wd.find_element_by_name(field_name).clear()
+            wd.find_element_by_name(field_name).send_keys(text)
+
+
+    def select_first_item(self):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]").click()
