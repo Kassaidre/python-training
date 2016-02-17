@@ -55,7 +55,7 @@ class ContactHelper:
 
     def return_to_home_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("home page").click()
+        wd.find_element_by_link_text("home").click()
 
 
     def change_field_value(self, field_name, text):
@@ -77,8 +77,9 @@ class ContactHelper:
 
     def get_contact_list(self):
         wd = self.app.wd
+        self.return_to_home_page()
         contact_list = []
-        for element in wd.find_elements_by_css_selector("tr"):
+        for element in wd.find_elements_by_name("entry"):
             text = element.text
             id = element.find_element_by_name("selected[]").get_attribute("value")
             contact_list.append(Contact(firstname=text, id=id))
