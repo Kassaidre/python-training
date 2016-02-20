@@ -1,4 +1,3 @@
-
 from model.contact import Contact
 from random import randrange
 
@@ -12,8 +11,3 @@ def test_delete_some_contact(app):
         assert len(old_contacts) - 1  == app.contact.count()
         old_contacts [index:index+1] = []
         assert old_contacts == new_contacts
-
-
-
-
-
