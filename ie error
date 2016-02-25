@@ -1,0 +1,316 @@
+C:\training\python-training\env\Scripts\python.exe "C:\Program Files (x86)\JetBrains\PyCharm Community Edition 5.0.3\helpers\pycharm\pytestrunner.py" -p pytest_teamcity C:/training/python-training/test/test_del_group.py --browser=ie
+Testing started at 15:10 ...
+============================= test session starts =============================
+platform win32 -- Python 3.5.1, pytest-2.8.7, py-1.4.31, pluggy-0.3.1
+rootdir: C:\training\python-training\test, inifile: 
+collected 1 items
+
+..\..\..\..\..\..\training\python-training\test\test_del_group.py E
+request = <SubRequest 'app' for <Function 'test_delete_some_group'>>
+
+    @pytest.fixture
+    def app(request):
+        global fixture
+        if fixture is None:
+            browser = request.config.getoption("--browser")
+            base_url = request.config.getoption("--baseUrl")
+>           fixture = Application(browser=browser, base_url=base_url)
+
+C:\training\python-training\conftest.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\training\python-training\fixture\application.py:14: in __init__
+    self.wd = webdriver.Ie()
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\ie\webdriver.py:55: in __init__
+    desired_capabilities=capabilities)
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:87: in __init__
+    self.start_session(desired_capabilities, browser_profile)
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:141: in start_session
+    'desiredCapabilities': desired_capabilities,
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:201: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x03330370>
+response = {'status': 500, 'value': '{"sessionId":"bb41e227-26c0-4ad9-9982-d91806cea60e","status":6,"value":{"message":"Unexpecte...t the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."}}'}
+
+    def check_response(self, response):
+        """
+            Checks that a JSON response from the WebDriver does not have an error.
+    
+            :Args:
+             - response - The JSON response from the WebDriver server as a dictionary
+               object.
+    
+            :Raises: If the response contains an error message.
+            """
+        status = response.get('status', None)
+        if status is None or status == ErrorCode.SUCCESS:
+            return
+    
+        value = None
+        message = response.get("message", "")
+        screen = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get('value', None)
+            if value_json and isinstance(value_json, basestring):
+                import json
+                try:
+                  value = json.loads(value_json)
+                  status = value.get('error', None)
+                  if status is None:
+                      status = value["status"]
+                      message = value["value"]["message"]
+                  else:
+                      message = value.get('message', None)
+                except ValueError:
+                  pass
+    
+        exception_class = ErrorInResponseException
+        if status in ErrorCode.NO_SUCH_ELEMENT:
+            exception_class = NoSuchElementException
+        elif status in ErrorCode.NO_SUCH_FRAME:
+            exception_class = NoSuchFrameException
+        elif status in ErrorCode.NO_SUCH_WINDOW:
+            exception_class = NoSuchWindowException
+        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:
+            exception_class = StaleElementReferenceException
+        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:
+            exception_class = ElementNotVisibleException
+        elif status in ErrorCode.INVALID_ELEMENT_STATE:
+            exception_class = InvalidElementStateException
+        elif status in ErrorCode.INVALID_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
+            exception_class = InvalidSelectorException
+        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
+            exception_class = ElementNotSelectableException
+        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
+            exception_class = WebDriverException
+        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
+            exception_class = WebDriverException
+        elif status in ErrorCode.TIMEOUT:
+            exception_class = TimeoutException
+        elif status in ErrorCode.SCRIPT_TIMEOUT:
+            exception_class = TimeoutException
+        elif status in ErrorCode.UNKNOWN_ERROR:
+            exception_class = WebDriverException
+        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:
+            exception_class = UnexpectedAlertPresentException
+        elif status in ErrorCode.NO_ALERT_OPEN:
+            exception_class = NoAlertPresentException
+        elif status in ErrorCode.IME_NOT_AVAILABLE:
+            exception_class = ImeNotAvailableException
+        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
+            exception_class = ImeActivationFailedException
+        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
+            exception_class = MoveTargetOutOfBoundsException
+        else:
+            exception_class = WebDriverException
+        if value == '' or value is None:
+            value = response['value']
+        if isinstance(value, basestring):
+            if exception_class == ErrorInResponseException:
+                raise exception_class(response, value)
+            raise exception_class(value)
+        if message != "" and 'message' in value:
+            message = value['message']
+    
+        screen = None
+        if 'screen' in value:
+            screen = value['screen']
+    
+        stacktrace = None
+        if 'stackTrace' in value and value['stackTrace']:
+            stacktrace = []
+            try:
+                for frame in value['stackTrace']:
+                    line = self._value_or_default(frame, 'lineNumber', '')
+                    file = self._value_or_default(frame, 'fileName', '<anonymous>')
+                    if line:
+                        file = "%s:%s" % (file, line)
+                    meth = self._value_or_default(frame, 'methodName', '<anonymous>')
+                    if 'className' in frame:
+                        meth = "%s.%s" % (frame['className'], meth)
+                    msg = "    at %s (%s)"
+                    msg = msg % (meth, file)
+                    stacktrace.append(msg)
+            except TypeError:
+                pass
+        if exception_class == ErrorInResponseException:
+            raise exception_class(response, message)
+        elif exception_class == UnexpectedAlertPresentException and 'alert' in value:
+            raise exception_class(message, screen, stacktrace, value['alert'].get('text'))
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: Unexpected error launching Internet Explorer. Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones.
+
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\errorhandler.py:188: WebDriverException
+E
+def fin():
+>       fixture.session.ensure_logout()
+E       AttributeError: 'NoneType' object has no attribute 'session'
+
+C:\training\python-training\conftest.py:22: AttributeError
+
+
+=================================== ERRORS ====================================
+__________________ ERROR at setup of test_delete_some_group ___________________
+
+request = <SubRequest 'app' for <Function 'test_delete_some_group'>>
+
+    @pytest.fixture
+    def app(request):
+        global fixture
+        if fixture is None:
+            browser = request.config.getoption("--browser")
+            base_url = request.config.getoption("--baseUrl")
+>           fixture = Application(browser=browser, base_url=base_url)
+
+C:\training\python-training\conftest.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\training\python-training\fixture\application.py:14: in __init__
+    self.wd = webdriver.Ie()
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\ie\webdriver.py:55: in __init__
+    desired_capabilities=capabilities)
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:87: in __init__
+    self.start_session(desired_capabilities, browser_profile)
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:141: in start_session
+    'desiredCapabilities': desired_capabilities,
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\webdriver.py:201: in execute
+    self.error_handler.check_response(response)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x03330370>
+response = {'status': 500, 'value': '{"sessionId":"bb41e227-26c0-4ad9-9982-d91806cea60e","status":6,"value":{"message":"Unexpecte...t the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."}}'}
+
+    def check_response(self, response):
+        """
+            Checks that a JSON response from the WebDriver does not have an error.
+    
+            :Args:
+             - response - The JSON response from the WebDriver server as a dictionary
+               object.
+    
+            :Raises: If the response contains an error message.
+            """
+        status = response.get('status', None)
+        if status is None or status == ErrorCode.SUCCESS:
+            return
+    
+        value = None
+        message = response.get("message", "")
+        screen = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get('value', None)
+            if value_json and isinstance(value_json, basestring):
+                import json
+                try:
+                  value = json.loads(value_json)
+                  status = value.get('error', None)
+                  if status is None:
+                      status = value["status"]
+                      message = value["value"]["message"]
+                  else:
+                      message = value.get('message', None)
+                except ValueError:
+                  pass
+    
+        exception_class = ErrorInResponseException
+        if status in ErrorCode.NO_SUCH_ELEMENT:
+            exception_class = NoSuchElementException
+        elif status in ErrorCode.NO_SUCH_FRAME:
+            exception_class = NoSuchFrameException
+        elif status in ErrorCode.NO_SUCH_WINDOW:
+            exception_class = NoSuchWindowException
+        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:
+            exception_class = StaleElementReferenceException
+        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:
+            exception_class = ElementNotVisibleException
+        elif status in ErrorCode.INVALID_ELEMENT_STATE:
+            exception_class = InvalidElementStateException
+        elif status in ErrorCode.INVALID_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
+            exception_class = InvalidSelectorException
+        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
+            exception_class = ElementNotSelectableException
+        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
+            exception_class = WebDriverException
+        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
+            exception_class = WebDriverException
+        elif status in ErrorCode.TIMEOUT:
+            exception_class = TimeoutException
+        elif status in ErrorCode.SCRIPT_TIMEOUT:
+            exception_class = TimeoutException
+        elif status in ErrorCode.UNKNOWN_ERROR:
+            exception_class = WebDriverException
+        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:
+            exception_class = UnexpectedAlertPresentException
+        elif status in ErrorCode.NO_ALERT_OPEN:
+            exception_class = NoAlertPresentException
+        elif status in ErrorCode.IME_NOT_AVAILABLE:
+            exception_class = ImeNotAvailableException
+        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
+            exception_class = ImeActivationFailedException
+        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
+            exception_class = MoveTargetOutOfBoundsException
+        else:
+            exception_class = WebDriverException
+        if value == '' or value is None:
+            value = response['value']
+        if isinstance(value, basestring):
+            if exception_class == ErrorInResponseException:
+                raise exception_class(response, value)
+            raise exception_class(value)
+        if message != "" and 'message' in value:
+            message = value['message']
+    
+        screen = None
+        if 'screen' in value:
+            screen = value['screen']
+    
+        stacktrace = None
+        if 'stackTrace' in value and value['stackTrace']:
+            stacktrace = []
+            try:
+                for frame in value['stackTrace']:
+                    line = self._value_or_default(frame, 'lineNumber', '')
+                    file = self._value_or_default(frame, 'fileName', '<anonymous>')
+                    if line:
+                        file = "%s:%s" % (file, line)
+                    meth = self._value_or_default(frame, 'methodName', '<anonymous>')
+                    if 'className' in frame:
+                        meth = "%s.%s" % (frame['className'], meth)
+                    msg = "    at %s (%s)"
+                    msg = msg % (meth, file)
+                    stacktrace.append(msg)
+            except TypeError:
+                pass
+        if exception_class == ErrorInResponseException:
+            raise exception_class(response, message)
+        elif exception_class == UnexpectedAlertPresentException and 'alert' in value:
+            raise exception_class(message, screen, stacktrace, value['alert'].get('text'))
+>       raise exception_class(message, screen, stacktrace)
+E       selenium.common.exceptions.WebDriverException: Message: Unexpected error launching Internet Explorer. Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones.
+
+C:\training\python-training\env\lib\site-packages\selenium\webdriver\remote\errorhandler.py:188: WebDriverException
+_________________ ERROR at teardown of test_delete_some_group _________________
+
+    def fin():
+>       fixture.session.ensure_logout()
+E       AttributeError: 'NoneType' object has no attribute 'session'
+
+C:\training\python-training\conftest.py:22: AttributeError
+=========================== 2 error in 0.61 seconds ===========================
+Exception ignored in: <bound method Service.__del__ of <selenium.webdriver.ie.service.Service object at 0x033301D0>>
+Traceback (most recent call last):
+  File "C:\training\python-training\env\lib\site-packages\selenium\webdriver\common\service.py", line 141, in __del__
+  File "C:\training\python-training\env\lib\site-packages\selenium\webdriver\common\service.py", line 120, in stop
+  File "C:\training\python-training\env\lib\site-packages\selenium\webdriver\common\service.py", line 95, in send_remote_shutdown_command
+  File "<frozen importlib._bootstrap>", line 969, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 954, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 887, in _find_spec
+TypeError: 'NoneType' object is not iterable
+
+Process finished with exit code 0
