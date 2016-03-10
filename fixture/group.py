@@ -91,6 +91,8 @@ class GroupHelper:
         self.return_to_groups_page()
         self.group_cache = None
 
+
+
     def count(self):
         wd = self.app.wd
         self.open_group_page()
