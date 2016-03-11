@@ -38,3 +38,4 @@ class Dbfixture:
 
     def destroy(self):
         self.connection.close()
+
